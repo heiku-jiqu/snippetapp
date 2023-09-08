@@ -2,16 +2,32 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/" {
-		fmt.Fprint(w, "hello world!")
-		return
-	} else {
+	if r.URL.Path != "/" {
 		http.NotFound(w, r)
+	}
+
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/pages/home.tmpl.html",
+	}
+	// if use New(), need to be same basename as file
+	templ, err := template.ParseFiles(files...)
+	if err != nil {
+		http.Error(w, "failed to render template", http.StatusInternalServerError)
+	}
+
+	// "base" is the defined template name, not the filename!
+	err = templ.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "failed to execute template", http.StatusInternalServerError)
 	}
 }
 

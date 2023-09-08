@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var serveURL string = "localhost:7777"
@@ -18,7 +19,19 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func snippetView(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "snippet view")
+	idString := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		http.NotFound(w, r)
+		fmt.Fprintf(w, "failed to parse id: %q", idString)
+		return
+	}
+	if id < 1 {
+		fmt.Fprintf(w, "expected id greater than 0, but got %d", id)
+		return
+	}
+
+	fmt.Fprintf(w, "snippet view id: %d", id)
 }
 
 func snippetCreate(w http.ResponseWriter, r *http.Request) {

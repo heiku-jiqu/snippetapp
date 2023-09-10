@@ -23,6 +23,11 @@ a:hover {
   background-color: transparent;
   text-decoration: underline;
 }
+nav a.live {
+  background-color:var(--yellow);
+  color: var(--black);
+  padding: 5px 25px;
+}
 
 footer {
   color: grey;

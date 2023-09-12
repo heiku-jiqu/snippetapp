@@ -6,13 +6,16 @@ import (
 	"net/http"
 )
 
-const (
-	defaultServeURL    string = "localhost:7777"
-	defaultUiStaticDir string = "./ui/static/"
-)
+type config struct {
+	addr      string
+	staticDir string
+}
+
+var cfg config
 
 func main() {
-	addr := flag.String("addr", defaultServeURL, "HTTP network address")
+	flag.StringVar(&cfg.addr, "addr", "localhost:7777", "HTTP network address")
+	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
 	flag.Parse() // parse input flags, if not will stay as default vals
 
 	// servemux == router
@@ -22,10 +25,10 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
-	fileServer := http.FileServer(http.Dir(defaultUiStaticDir))
+	fileServer := http.FileServer(http.Dir(cfg.staticDir))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	log.Printf("starting server on %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
+	log.Printf("starting server on %s", cfg.addr)
+	err := http.ListenAndServe(cfg.addr, mux)
 	log.Fatal(err)
 }

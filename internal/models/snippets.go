@@ -50,5 +50,30 @@ WHERE expires > NOW() AND id = $1`
 
 // Returns the 10 most recently created Snippets.
 func (m *SnippetModel) Latest() ([]*Snippet, error) {
-	return nil, nil
+	stmt := `SELECT id, title, content, created, expires FROM snippets
+  WHERE expires > NOW() 
+  ORDER BY id DESC 
+  LIMIT 10`
+
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	snippets := make([]*Snippet, 10)
+	for rows.Next() {
+		snip := &Snippet{}
+		err = rows.Scan(&snip.ID, &snip.Title, &snip.Content, &snip.Created, &snip.Expires)
+		if err != nil {
+			return nil, err
+		}
+		snippets = append(snippets, snip)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return snippets, nil
 }

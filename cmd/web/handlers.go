@@ -33,6 +33,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serveError(w, err)
 		return
 	}
+	snippets, err := app.snippets.Latest()
+	if err != nil {
+		app.serveError(w, err)
+		return
+	}
+	for _, snippet := range snippets {
+		fmt.Fprintf(w, "%+v\n", snippet)
+	}
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {

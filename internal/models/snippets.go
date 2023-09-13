@@ -17,9 +17,18 @@ type SnippetModel struct {
 	DB *sql.DB
 }
 
-// Inserts snippet into database
+// Inserts snippet into database and returns id if successful
 func (m *SnippetModel) Insert(title, content string, expires int) (int, error) {
-	return 0, nil
+	sql := `INSERT INTO snippets (title, content, created, expires) 
+VALUES(?, ?, NOW(), NOW() + '? days'::INTERVAL)
+RETURNING id`
+	var id int
+	err := m.DB.QueryRow(sql, title, content, expires).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	return id, err
 }
 
 // Returns Snippet based on id

@@ -29,16 +29,7 @@ func main() {
 
 	app := &application{errorLog: errorLog, infoLog: infoLog}
 
-	// servemux == router
-	mux := http.NewServeMux()
-	// register a handler in our servemux (router)
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet/view", app.snippetView)
-	mux.HandleFunc("/snippet/create", app.snippetCreate)
-
-	fileServer := http.FileServer(http.Dir(cfg.staticDir))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
+	mux := app.routes()
 	infoLog.Printf("starting server on %s", cfg.addr)
 	svr := &http.Server{
 		Addr:     cfg.addr,

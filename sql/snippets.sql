@@ -33,4 +33,5 @@ NOW() + INTERVAL '7 DAY'
 
 -- Create web user that app will use to talk to db
 CREATE USER web;
-GRANT DELETE, UPDATE, INSERT, SELECT ON TABLE public.snippets TO web;
+GRANT DELETE, UPDATE, INSERT, SELECT ON ALL TABLES IN SCHEMA public TO web;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO web;

@@ -29,13 +29,13 @@ func main() {
 
 	app := &application{errorLog: errorLog, infoLog: infoLog}
 
-	mux := app.routes()
-	infoLog.Printf("starting server on %s", cfg.addr)
 	svr := &http.Server{
 		Addr:     cfg.addr,
 		ErrorLog: errorLog,
-		Handler:  mux,
+		Handler:  app.routes(),
 	}
+
+	infoLog.Printf("starting server on %s", cfg.addr)
 	err := svr.ListenAndServe()
 	errorLog.Fatal(err)
 }

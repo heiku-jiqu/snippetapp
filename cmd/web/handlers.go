@@ -20,16 +20,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// if use New(), need to be same basename as file
 	templ, err := template.ParseFiles(files...)
 	if err != nil {
-		app.errorLog.Println(err.Error())
-		http.Error(w, "failed to render template", http.StatusInternalServerError)
+		app.serveError(w, err)
 		return
 	}
 
 	// "base" is the defined template name, not the filename!
 	err = templ.ExecuteTemplate(w, "base", nil)
 	if err != nil {
-		app.errorLog.Println(err.Error())
-		http.Error(w, "failed to execute template", http.StatusInternalServerError)
+		app.serveError(w, err)
 		return
 	}
 }
@@ -37,13 +35,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idString)
-	if err != nil {
-		http.NotFound(w, r)
-		fmt.Fprintf(w, "failed to parse id: %q", idString)
-		return
-	}
-	if id < 1 {
-		fmt.Fprintf(w, "expected id greater than 0, but got %d", id)
+	if err != nil || id < 1 {
+		app.notFound(w)
 		return
 	}
 
@@ -53,7 +46,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.Header().Set("Allow", "POST")
-		http.Error(w, fmt.Sprintf("%s Method not allowed", r.Method), http.StatusMethodNotAllowed)
+		app.clientError(w, http.StatusMethodNotAllowed)
 		return
 	}
 	fmt.Fprint(w, "snippet create")

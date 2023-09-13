@@ -27,7 +27,7 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	app := &application{infoLog, errorLog}
+	app := &application{errorLog: errorLog, infoLog: infoLog}
 
 	// servemux == router
 	mux := http.NewServeMux()

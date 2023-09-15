@@ -20,3 +20,19 @@ func (app *application) clientError(w http.ResponseWriter, status int) {
 func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
 }
+
+func (app *application) render(w http.ResponseWriter, status int, templateName string, data *templateData) {
+	templ, ok := app.templateCache[templateName]
+	if !ok {
+		app.serveError(w, fmt.Errorf("Failed to get template %s", templateName))
+		return
+	}
+
+	w.WriteHeader(status)
+
+	err := templ.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serveError(w, err)
+		return
+	}
+}

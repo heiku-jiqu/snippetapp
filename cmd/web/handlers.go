@@ -27,21 +27,22 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// "base" is the defined template name, not the filename!
-	err = templ.ExecuteTemplate(w, "base", nil)
-	if err != nil {
-		app.serveError(w, err)
-		return
-	}
-
-	// retrieve and show snippets
+	// retrieve snippets
 	snippets, err := app.snippets.Latest()
 	if err != nil {
 		app.serveError(w, err)
 		return
 	}
-	for _, snippet := range snippets {
-		fmt.Fprintf(w, "%+v\n", snippet)
+
+	data := templateData{
+		Snippets: snippets,
+	}
+
+	// "base" is the defined template name, not the filename!
+	err = templ.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serveError(w, err)
+		return
 	}
 }
 

@@ -103,3 +103,25 @@ footer {
   }
 }
 
+table{
+  width: 100%;
+  padding: 1em;
+  border: 2px solid var(--yellow);
+  & th {
+    font-size: 1.2rem;
+    padding-bottom: 0.5rem;
+  }
+  & td, a {
+    font-family: monospace;
+    font-size: 1rem;
+
+    color: grey;
+  }
+  & tr * {
+    text-align: left;
+  }
+  & tr td {
+    padding: 0.2rem 0;
+  }
+}
+

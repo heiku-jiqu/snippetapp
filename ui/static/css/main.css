@@ -3,16 +3,28 @@
   --black: #141414;
   --green: #27FB6B
 }
-header > h1 {
-  font-size: 70px;
-  margin: 0.25rem;
-}
 
 * {
   background-color: var(--black);
   font-family: "Permanent Marker", Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   text-align: center;
   color: var(--yellow);
+}
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  padding: 0px calc((100% - 800px) / 2);
+}
+
+header > h1 {
+  font-size: 4em;
+  margin: 0;
+
+  & a, a:hover {
+    text-decoration:none;
+  }
 }
 
 a:link {
@@ -23,16 +35,71 @@ a:hover {
   background-color: transparent;
   text-decoration: underline;
 }
+nav {
+  margin: 1em 0;
+}
+nav a {
+  padding: 5px 20px;
+  display: inline-block;
+}
 nav a.live {
   background-color:var(--yellow);
   color: var(--black);
-  padding: 5px 25px;
 }
 
 footer {
   color: grey;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 2.5rem;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 100vh;
+  padding: 0.5em;
 }
+
+.snippet {
+  border: 2px solid var(--yellow);
+  
+  & * {
+    font-family: monospace
+  }
+
+  & pre {
+    padding: 2em;
+    margin: 0;
+    text-align: left;
+    border-top: 1px solid var(--yellow);
+    border-bottom: 1px solid var(--yellow);
+  }
+
+}
+
+.snippet .metadata {
+  padding: 0.75em 18px;
+  overflow: auto;
+
+  & * {
+    background: transparent;
+  };
+
+  & strong {
+    float: left;
+    font-size: 1.25em;
+  }
+  & span {
+    float: right;
+    font-size: 1.25em;
+  }
+
+  & time {
+    display: inline-block;
+    color: grey;
+
+    :first-child {
+      float: left;
+    };
+
+    :last-child {
+      float: left;
+    };
+  }
+}
+

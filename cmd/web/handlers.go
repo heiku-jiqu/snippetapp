@@ -33,6 +33,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serveError(w, err)
 		return
 	}
+
+	// retrieve and show snippets
 	snippets, err := app.snippets.Latest()
 	if err != nil {
 		app.serveError(w, err)
@@ -60,7 +62,23 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Fprintf(w, "%+v", snippet)
+
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/view.tmpl.html",
+	}
+	templ, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serveError(w, err)
+		return
+	}
+
+	err = templ.ExecuteTemplate(w, "base", snippet)
+	if err != nil {
+		app.serveError(w, err)
+		return
+	}
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {

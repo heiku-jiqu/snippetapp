@@ -93,12 +93,12 @@ footer {
     display: inline-block;
     color: grey;
 
-    :first-child {
+    &:first-child {
       float: left;
     };
 
-    :last-child {
-      float: left;
+    &:last-child {
+      float: right;
     };
   }
 }

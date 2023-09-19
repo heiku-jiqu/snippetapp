@@ -50,7 +50,8 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "ok! display the form for creating a new snippet here...")
+	data := app.newTemplateData(r)
+	app.render(w, http.StatusOK, "create.tmpl.html", data)
 }
 
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {

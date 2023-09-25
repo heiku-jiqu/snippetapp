@@ -125,3 +125,49 @@ table{
   }
 }
 
+label {
+  display: inline-block;
+}
+
+input[type='text'] {
+  width: 100%;
+  text-align: left;
+  border-color: var(--yellow);
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  font-family: monospace;
+}
+input[type='submit'] {
+  background: #333;
+  padding: 0.5em 1.5em;
+  border-radius: 4px;
+  border-color: transparent;
+  transition: all 0.2s;
+  &:hover {
+    color: var(--green)
+  }
+  &:active {
+    background: var(--black);
+    border-style: solid;
+    border-radius: 4px;
+    border-color: var(--green);
+    transition: all 0s;
+  }
+}
+input[type='radio'] {
+  margin-left: 2em;
+}
+textarea {
+  width: 100%;
+  height: 10em;
+  text-align: left;
+  border-color: var(--yellow);
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+form > div {
+  padding: 0.5em;
+  text-align: left;
+}

@@ -2,10 +2,13 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"net/http"
 	"runtime/debug"
 	"time"
+
+	"github.com/go-playground/form/v4"
 )
 
 func (app *application) serveError(w http.ResponseWriter, err error) {
@@ -45,4 +48,23 @@ func (app *application) newTemplateData(r *http.Request) *templateData {
 	return &templateData{
 		CurrentYear: time.Now().Year(),
 	}
+}
+
+func (app *application) decodePostForm(r *http.Request, destination interface{}) error {
+	err := r.ParseForm()
+	if err != nil {
+		return err
+	}
+	err = app.formDecoder.Decode(destination, r.PostForm)
+	if err != nil {
+		var invalidDecoderError *form.InvalidDecoderError
+		// second arg of errors.As needs to be a "double pointer"
+		// it points to the pointer that points to form.InvalidDecoderError
+		// because *pointer* that points to form.InvalidDecoderError is the one that impls .Error()!
+		if errors.As(err, &invalidDecoderError) {
+			panic(err)
+		}
+		return err
+	}
+	return nil
 }

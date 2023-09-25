@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
 	"github.com/heiku-jiqu/snippetapp/internal/models"
+	"github.com/heiku-jiqu/snippetapp/internal/validator"
 	"github.com/julienschmidt/httprouter"
 )
 
 type snippetCreateForm struct {
-	Title       string
-	Content     string
-	Expires     int
-	FieldErrors map[string]string
+	Title               string
+	Content             string
+	Expires             int
+	validator.Validator // embed Validator struct, snippetCreatForm will have all the fields and methods of Validator
 }
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -82,24 +81,15 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 		r.PostForm.Get("title"),
 		r.PostForm.Get("content"),
 		parsedExpires,
-		map[string]string{},
+		validator.Validator{},
 	}
 
-	if strings.TrimSpace(form.Title) == "" {
-		form.FieldErrors["title"] = "This field cannot be blank"
-	} else if utf8.RuneCountInString(form.Title) > 100 {
-		form.FieldErrors["title"] = "This field cannot be more than 100 characters long"
-	}
+	form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Title, 100), "title", "This field cannot be more than 100 characters long")
+	form.CheckField(validator.NotBlank(form.Content), "content", "This field cannot be blank")
+	form.CheckField(validator.PermittedInt(form.Expires, 1, 7, 365), "expires", "This field must equal 1, 7 or 365")
 
-	if strings.TrimSpace(form.Content) == "" {
-		form.FieldErrors["content"] = "This field cannot be blank"
-	}
-
-	if parsedExpires != 1 && parsedExpires != 7 && parsedExpires != 365 {
-		form.FieldErrors["expires"] = "This field must equal 1, 7 or 365"
-	}
-
-	if len(form.FieldErrors) > 0 {
+	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
 		app.render(w, http.StatusUnprocessableEntity, "create.tmpl.html", data)

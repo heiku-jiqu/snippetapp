@@ -38,7 +38,7 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO web;
 
 -- Create sessions to hold session data for users
 CREATE TABLE sessions (
- token CHAR(43) PRIMARY KEY,
+ token TEXT PRIMARY KEY,
  data BYTEA NOT NULL,
  expiry TIMESTAMPTZ NOT NULL
 );

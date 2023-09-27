@@ -175,3 +175,10 @@ form > div {
   padding: 0.5em;
   text-align: left;
 }
+
+div.flash {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 0.5em 0em;
+  margin: 0.75em 0em;
+}

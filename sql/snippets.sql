@@ -44,3 +44,7 @@ CREATE TABLE sessions (
 );
 
 CREATE INDEX sessions_expiry_idx ON sessions(expiry);
+
+-- Grant web user the permissions to use sessions table
+GRANT DELETE, UPDATE, INSERT, SELECT ON ALL TABLES IN SCHEMA public TO web;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO web;

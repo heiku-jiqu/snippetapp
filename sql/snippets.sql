@@ -35,3 +35,12 @@ NOW() + INTERVAL '7 DAY'
 CREATE USER web;
 GRANT DELETE, UPDATE, INSERT, SELECT ON ALL TABLES IN SCHEMA public TO web;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO web;
+
+-- Create sessions to hold session data for users
+CREATE TABLE sessions (
+ token CHAR(43) PRIMARY KEY,
+ data BYTEA NOT NULL,
+ expiry TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX sessions_expiry_idx ON sessions(expiry);

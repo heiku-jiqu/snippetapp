@@ -61,6 +61,7 @@ func main() {
 	sessionManager := scs.New()
 	sessionManager.Store = pgxstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
+	sessionManager.Cookie.Secure = true
 
 	app := &application{
 		errorLog:       errorLog,
@@ -78,7 +79,7 @@ func main() {
 	}
 
 	infoLog.Printf("starting server on %s", cfg.addr)
-	err = svr.ListenAndServe()
+	err = svr.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	errorLog.Fatal(err)
 }
 

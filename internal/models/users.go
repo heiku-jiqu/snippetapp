@@ -4,9 +4,14 @@ import (
 	// "context"
 	// "database/sql"
 	// "errors"
+	"context"
+	"errors"
+	"strings"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -22,14 +27,28 @@ type UserModel struct {
 }
 
 func (u *UserModel) Insert(name, email, password string) error {
-	// sql := `INSERT INTO users (name, email, hashed_password, created)
-	//    VALUES ($1, $2, $3, NOW())
-	//    RETURNING id`
-	// u.DB.QueryRow(
-	// 	context.Background(),
-	// 	sql,
-	// 	name, email,
-	// )
+	hashed_password, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		return err
+	}
+
+	sql := `INSERT INTO users (name, email, hashed_password, created)
+	   VALUES ($1, $2, $3, NOW())
+	   RETURNING id`
+	_, err = u.DB.Exec(
+		context.Background(),
+		sql,
+		name, email, string(hashed_password),
+	)
+	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			if pgErr.Code == "23505" && strings.Contains(pgErr.Message, "unique") {
+				return ErrDuplicateEmail
+			}
+		}
+		return err
+	}
 	return nil
 }
 

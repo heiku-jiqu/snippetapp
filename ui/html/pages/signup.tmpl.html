@@ -1,0 +1,33 @@
+{{define "title"}}Signup{{end}}
+
+{{define "main"}}
+<form method='post' action='/user/signup'>
+  <div>
+    <label for='signup_name'>Name:</label>
+    {{with .Form.FieldErrors.name}}
+    <label class='error'>{{.}}</label>
+    {{end}}
+    <input type='text' name='name' id='signup_name' value={{.Form.Name}}>
+  </div>
+
+  <div>
+    <label for='signup_email'>Email:</label>
+    {{with .Form.FieldErrors.email}}
+    <label class='error'>{{.}}</label>
+    {{end}}
+    <input type='Email' name='email' id='signup_email' value={{.Form.Email}}>
+  </div>
+
+  <div>
+
+    <label for='signup_pw'>Password:</label>
+    {{with .Form.FieldErrors.password}}
+    <label class='error'>{{.}}</label>
+    {{end}}
+    <input type='password' name='password' id='signup_pw'>
+  </div>
+  <div>
+    <input type='submit' value='Signup'>
+  </div>
+</form>
+{{end}}

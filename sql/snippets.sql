@@ -48,3 +48,13 @@ CREATE INDEX sessions_expiry_idx ON sessions(expiry);
 -- Grant web user the permissions to use sessions table
 GRANT DELETE, UPDATE, INSERT, SELECT ON ALL TABLES IN SCHEMA public TO web;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO web;
+
+-- Create users table to hold user accounts
+CREATE TABLE users (
+ id SERIAL PRIMARY KEY,
+ name VARCHAR(255) NOT NULL,
+ email VARCHAR(255) NOT NULL CONSTRAINT users_uc_email UNIQUE,
+ hashed_password CHAR(60) NOT NULL,
+ created TIMESTAMPTZ NOT NULL
+);
+GRANT DELETE, UPDATE, INSERT, SELECT ON TABLE users IN SCHEMA public TO web;

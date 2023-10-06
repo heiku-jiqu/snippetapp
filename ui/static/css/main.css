@@ -147,6 +147,8 @@ label {
 }
 label.error {  
   font-family: monospace;
+}
+.error {
   color: red;
 }
 

@@ -2,6 +2,7 @@
 
 {{define "main"}}
 <form method='post' action='/user/signup'>
+  <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
   <div>
     <label for='signup_name'>Name:</label>
     {{with .Form.FieldErrors.name}}

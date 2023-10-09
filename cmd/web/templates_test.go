@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 	"time"
+
+	"github.com/heiku-jiqu/snippetapp/internal/assert"
 )
 
 func TestHumanDate(t *testing.T) {
@@ -30,9 +32,7 @@ func TestHumanDate(t *testing.T) {
 	for _, c := range testCases {
 		t.Run(c.testname, func(t *testing.T) {
 			output := humanDate(c.input)
-			if output != c.expected {
-				t.Errorf("expected %q, but got %q", c.expected, output)
-			}
+			assert.Equal(t, output, c.expected)
 		})
 	}
 }

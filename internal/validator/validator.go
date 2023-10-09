@@ -56,7 +56,7 @@ func Matches(v string, rx *regexp.Regexp) bool {
 	return rx.MatchString(v)
 }
 
-func PermittedInt(v int, permittedVals ...int) bool {
+func PermittedValue[T comparable](v T, permittedVals ...T) bool {
 	for i := range permittedVals {
 		if v == permittedVals[i] {
 			return true

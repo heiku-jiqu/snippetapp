@@ -2,11 +2,14 @@ package main
 
 import (
 	"bytes"
+	"html"
 	"io"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
+	"regexp"
 	"testing"
 	"time"
 
@@ -71,4 +74,30 @@ func (svr *testServer) get(t *testing.T, urlPath string) (int, http.Header, stri
 	bytes.TrimSpace(body)
 
 	return res.StatusCode, res.Header, string(body)
+}
+
+func (svr *testServer) postForm(t *testing.T, urlPath string, data url.Values) (int, http.Header, string) {
+	res, err := svr.Client().PostForm(svr.URL+urlPath, data)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bytes.TrimSpace(body)
+
+	return res.StatusCode, res.Header, string(body)
+}
+
+var csrfTokenRX = regexp.MustCompile(`<input type='hidden' name='csrf_token' value='(.+)'>`)
+
+func extractCSRFToken(t *testing.T, body string) string {
+	matches := csrfTokenRX.FindStringSubmatch(body)
+	if len(matches) < 2 {
+		t.Fatal("no csrf token found in body")
+	}
+	return html.UnescapeString(string(matches[1]))
 }

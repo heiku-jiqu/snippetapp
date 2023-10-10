@@ -20,6 +20,7 @@ func (app *application) routes() http.Handler {
 	// register directory handler in our servemux (router)
 	fileServer := http.FileServer(http.FS(ui.Files))
 	router.Handler(http.MethodGet, "/static/*filepath", fileServer)
+	router.HandlerFunc(http.MethodGet, "/ping", ping)
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 	// register a handler in our servemux (router)

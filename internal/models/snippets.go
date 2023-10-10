@@ -21,6 +21,12 @@ type SnippetModel struct {
 	DB *pgxpool.Pool
 }
 
+type SnippetModelInterface interface {
+	Insert(title string, content string, expires int) (int, error)
+	Get(id int) (*Snippet, error)
+	Latest() ([]*Snippet, error)
+}
+
 // Inserts snippet into database and returns id if successful
 func (m *SnippetModel) Insert(title, content string, expires int) (int, error) {
 	sql := `INSERT INTO snippets (title, content, created, expires) 

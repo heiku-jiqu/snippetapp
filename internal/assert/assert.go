@@ -19,3 +19,10 @@ func StringContains(t *testing.T, actual, substr string) {
 		t.Errorf("expected %q to contain %q", actual, substr)
 	}
 }
+
+func NilError(t *testing.T, actual error) {
+	t.Helper()
+	if actual != nil {
+		t.Errorf("expected nil but got %v", actual)
+	}
+}

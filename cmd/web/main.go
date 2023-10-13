@@ -24,6 +24,7 @@ type config struct {
 	addr      string
 	staticDir string
 	dsn       string
+	debug     bool
 }
 
 type application struct {
@@ -34,6 +35,7 @@ type application struct {
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
+	debugMode      bool
 }
 
 var cfg config
@@ -42,6 +44,7 @@ func main() {
 	flag.StringVar(&cfg.addr, "addr", "localhost:7777", "HTTP network address")
 	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
 	flag.StringVar(&cfg.dsn, "dsn", "postgres://web:pass@localhost:5432/snippetapp?sslmode=disable", "PostgreSQL connection URI")
+	flag.BoolVar(&cfg.debug, "debug", false, "enter debug mode")
 	flag.Parse() // parse input flags, if not will stay as default vals
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
@@ -73,6 +76,7 @@ func main() {
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
+		debugMode:      cfg.debug,
 	}
 
 	tlsConfig := &tls.Config{

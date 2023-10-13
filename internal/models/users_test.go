@@ -7,6 +7,9 @@ import (
 )
 
 func TestUserModelExists(t *testing.T) {
+	if testing.Short() {
+		t.Skip("models: skipping integration test")
+	}
 	conn := newTestDB(t)
 	users := UserModel{conn}
 	t.Run("User exists", func(t *testing.T) {

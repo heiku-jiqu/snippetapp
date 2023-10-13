@@ -203,3 +203,7 @@ div.flash {
   padding: 0.5em 0em;
   margin: 0.75em 0em;
 }
+
+.about {
+  font-family: monospace;
+}

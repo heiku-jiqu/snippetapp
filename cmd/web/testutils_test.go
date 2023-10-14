@@ -43,6 +43,7 @@ type testServer struct {
 	*httptest.Server
 }
 
+// defer testServer.Close() after using
 func newTestServer(t *testing.T, h http.Handler) *testServer {
 	svr := httptest.NewTLSServer(h)
 

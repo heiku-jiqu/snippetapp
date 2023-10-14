@@ -183,3 +183,37 @@ func TestUserSignupPost(t *testing.T) {
 		})
 	}
 }
+
+func TestSnippetCreateGet(t *testing.T) {
+	// httptest.NewRequest(http.MethodGet, "/snippet/create", w)
+	// recorder := httptest.NewRecorder()
+	app := newTestApplication(t)
+	svr := newTestServer(t, app.routes())
+	defer svr.Close()
+
+	t.Run("Unauth redirect to login", func(t *testing.T) {
+		statuscode, header, _ := svr.get(t, "/snippet/create")
+		assert.Equal(t, statuscode, http.StatusSeeOther)
+		assert.Equal(t, header.Get("Location"), "/user/login")
+	})
+	t.Run("Auth get shown new snippet form", func(t *testing.T) {
+		_, _, body := svr.get(t, "/user/login")
+		validCSRF := extractCSRFToken(t, body)
+		validPassword := "pa$$word"
+		validEmail := "bob@example.com"
+
+		vals := url.Values{}
+		vals.Set("email", validEmail)
+		vals.Set("password", validPassword)
+		vals.Set("csrf_token", validCSRF)
+
+		statuscode, _, _ := svr.postForm(t, "/user/login", vals)
+		if statuscode != http.StatusSeeOther {
+			t.Fatalf("expected successful login, but got status: %v", statuscode)
+		}
+
+		statuscode, _, body = svr.get(t, "/snippet/create")
+		assert.Equal(t, statuscode, http.StatusOK)
+		assert.StringContains(t, body, "<form action='/snippet/create' method='POST'>")
+	})
+}

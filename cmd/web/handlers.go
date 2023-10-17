@@ -253,3 +253,16 @@ func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 	data.User = user
 	app.render(w, http.StatusOK, "account.tmpl.html", data)
 }
+
+func (app *application) accountPasswordUpdate(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	app.render(w, http.StatusOK, "accountpasswordupdate.tmpl.html", data)
+	fmt.Fprint(w, "change password")
+}
+
+func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http.Request) {
+	oldPw := r.FormValue("oldPassword")
+	newPw := r.FormValue("newPassword")
+	newPwConfirm := r.FormValue("newPasswordConfirm")
+	fmt.Fprintf(w, "old: %v, new: %v, newconfirm: %v", oldPw, newPw, newPwConfirm)
+}

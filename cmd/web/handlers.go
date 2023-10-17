@@ -316,5 +316,5 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 	}
 
 	app.sessionManager.Put(r.Context(), "flash", "Password was changed successfully")
-	http.Redirect(w, r, "/account/password/update", http.StatusSeeOther)
+	http.Redirect(w, r, "/account/view", http.StatusSeeOther)
 }

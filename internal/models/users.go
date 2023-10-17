@@ -15,6 +15,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const bcryptCost int = 12
+
 type User struct {
 	ID      int
 	Name    string
@@ -32,10 +34,11 @@ type UserModelInterface interface {
 	Exists(id int) (bool, error)
 	Insert(name string, email string, password string) error
 	Get(id int) (*User, error)
+	ChangePassword(id int, oldPassword, newPassword string) error
 }
 
 func (u *UserModel) Insert(name, email, password string) error {
-	hashed_password, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	hashed_password, err := bcrypt.GenerateFromPassword([]byte(password), bcryptCost)
 	if err != nil {
 		return err
 	}
@@ -104,4 +107,47 @@ func (u *UserModel) Get(id int) (*User, error) {
 		}
 	}
 	return &user, nil
+}
+
+func (u *UserModel) ChangePassword(id int, oldPassword, newPassword string) error {
+	oldHash, err := u.GetPasswordHash(id)
+	if err != nil {
+		return ErrNoRecord
+	}
+
+	err = bcrypt.CompareHashAndPassword(oldHash, []byte(oldPassword))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return ErrInvalidCredentials
+		} else {
+			return err
+		}
+	}
+
+	newHash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcryptCost)
+	if err != nil {
+		return err
+	}
+
+	sql := `UPDATE users SET hashed_password = $1 WHERE id = $2`
+	_, err = u.DB.Exec(context.Background(), sql, newHash, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *UserModel) GetPasswordHash(id int) ([]byte, error) {
+	sql := `SELECT hashed_password FROM users WHERE id = $1`
+	var hash []byte
+	err := u.DB.QueryRow(context.Background(), sql, id).Scan(&hash)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrNoRecord
+		}
+		return nil, err
+	}
+
+	return hash, nil
 }

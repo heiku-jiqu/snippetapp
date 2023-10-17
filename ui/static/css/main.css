@@ -208,6 +208,11 @@ div.flash {
   font-family: monospace;
 }
 
+button {
+  &:hover {
+    color: var(--green)
+  }
+}
 table.account {
   & td {
     &:first-child {

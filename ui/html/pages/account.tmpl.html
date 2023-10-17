@@ -5,15 +5,15 @@
 <table class='account'>
   <tr>
     <td>Name:</td>
-    <td>Example Name</td>
+    <td>{{.User.Name}}</td>
   </tr>
   <tr>
     <td>Email:</td>
-    <td>example@email.com</td>
+    <td>{{.User.Email}}</td>
   </tr>
   <tr>
     <td>Joined:</td>
-    <td>Example date</td>
+    <td>{{humanDate .User.Created}}</td>
   </tr>
 </table>
 {{end}}

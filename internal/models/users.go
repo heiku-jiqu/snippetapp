@@ -31,6 +31,7 @@ type UserModelInterface interface {
 	Authenticate(email string, password string) (int, error)
 	Exists(id int) (bool, error)
 	Insert(name string, email string, password string) error
+	Get(id int) (*User, error)
 }
 
 func (u *UserModel) Insert(name, email, password string) error {
@@ -91,8 +92,16 @@ func (u *UserModel) Exists(id int) (bool, error) {
 	return exists, err
 }
 
-func (u *UserModel) AccountDetails(id int) (name, email string, joined time.Time, err error) {
-	sql := `SELECT name, email, joined FROM users WHERE id = $1`
-	err = u.DB.QueryRow(context.Background(), sql, id).Scan(&name, &email, &joined)
-	return
+func (u *UserModel) Get(id int) (*User, error) {
+	sql := `SELECT name, email, created FROM users WHERE id = $1`
+	user := User{ID: id}
+	err := u.DB.QueryRow(context.Background(), sql, id).Scan(&user.Name, &user.Email, &user.Created)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return &User{}, ErrNoRecord
+		} else {
+			return &User{}, err
+		}
+	}
+	return &user, nil
 }

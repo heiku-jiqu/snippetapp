@@ -1,6 +1,10 @@
 package mocks
 
-import "github.com/heiku-jiqu/snippetapp/internal/models"
+import (
+	"time"
+
+	"github.com/heiku-jiqu/snippetapp/internal/models"
+)
 
 type UserModel struct{}
 
@@ -26,5 +30,14 @@ func (u *UserModel) Exists(id int) (bool, error) {
 		return true, nil
 	default:
 		return false, nil
+	}
+}
+
+func (u *UserModel) Get(id int) (*models.User, error) {
+	switch id {
+	case 1:
+		return &models.User{ID: 1, Name: "Bob", Email: "bob@example.com", Created: time.Now()}, nil
+	default:
+		return nil, models.ErrNoRecord
 	}
 }

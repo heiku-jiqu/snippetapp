@@ -90,3 +90,9 @@ func (u *UserModel) Exists(id int) (bool, error) {
 	err := u.DB.QueryRow(context.Background(), sql, id).Scan(&exists)
 	return exists, err
 }
+
+func (u *UserModel) AccountDetails(id int) (name, email string, joined time.Time, err error) {
+	sql := `SELECT name, email, joined FROM users WHERE id = $1`
+	err = u.DB.QueryRow(context.Background(), sql, id).Scan(&name, &email, &joined)
+	return
+}

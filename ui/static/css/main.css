@@ -207,3 +207,16 @@ div.flash {
 .about {
   font-family: monospace;
 }
+
+table.account {
+  & td {
+    &:first-child {
+      font-weight: bold;
+      text-align: left;
+      color: var(--yellow);
+    }
+    &:last-child{
+      text-align: right;
+    }
+  }
+}

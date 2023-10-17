@@ -279,17 +279,9 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 	form.CheckField(validator.MinChars(form.NewPassword, 8), "newPassword", "This field must be at least 8 characters long")
 	form.CheckField(validator.NotBlank(form.NewPasswordConfirm), "newPasswordConfirm", "New password confirmation cannot be blank")
 	form.CheckField(validator.NotBlank(form.OldPassword), "oldPassword", "Old password cannot be blank")
+	form.CheckField(form.NewPassword == form.NewPasswordConfirm, "newPasswordConfirm", "New passwords do not match")
 
 	if !form.Valid() {
-		data := app.newTemplateData(r)
-		data.Form = form
-		app.render(w, http.StatusUnprocessableEntity, "accountpasswordupdate.tmpl.html", data)
-		return
-	}
-
-	if form.NewPassword != form.NewPasswordConfirm {
-		// TODO:flash messages
-		form.AddFieldError("newPasswordConfirm", "New password confirmation must match!")
 		data := app.newTemplateData(r)
 		data.Form = form
 		app.render(w, http.StatusUnprocessableEntity, "accountpasswordupdate.tmpl.html", data)

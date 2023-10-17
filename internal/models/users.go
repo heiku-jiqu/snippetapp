@@ -130,7 +130,7 @@ func (u *UserModel) ChangePassword(id int, oldPassword, newPassword string) erro
 	}
 
 	sql := `UPDATE users SET hashed_password = $1 WHERE id = $2`
-	_, err = u.DB.Exec(context.Background(), sql, newHash, id)
+	_, err = u.DB.Exec(context.Background(), sql, string(newHash), id)
 	if err != nil {
 		return err
 	}

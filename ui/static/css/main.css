@@ -147,6 +147,9 @@ label {
 }
 label.error {  
   font-family: monospace;
+  + input:is([type='text'],[type='email'],[type='password']) {
+    border-color: red;
+  }
 }
 .error {
   color: red;
